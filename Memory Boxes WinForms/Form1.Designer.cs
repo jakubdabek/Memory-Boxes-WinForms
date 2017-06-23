@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.TitlePanel = new System.Windows.Forms.Panel();
+            this.titleRainbowTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // TitlePanel
@@ -40,6 +41,11 @@
             this.TitlePanel.Size = new System.Drawing.Size(269, 92);
             this.TitlePanel.TabIndex = 1;
             this.TitlePanel.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // titleRainbowTimer
+            // 
+            this.titleRainbowTimer.Interval = 750;
+            this.titleRainbowTimer.Tick += new System.EventHandler(this.titleRainbowTimer_Tick);
             // 
             // Form1
             // 
@@ -57,6 +63,7 @@
 
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Panel TitlePanel;
+        private System.Windows.Forms.Timer titleRainbowTimer;
     }
 }
 

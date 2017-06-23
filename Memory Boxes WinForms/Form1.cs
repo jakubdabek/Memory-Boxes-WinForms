@@ -20,57 +20,54 @@ namespace Memory_Boxes_WinForms
 
         private void SetTitleColorBlend(string title, Graphics gr)
         {
-            if(colorBlend == null)
+            colorBlend = new ColorBlend();
+
+            int len = title.Length;
+            List<CharacterRange> ranges = new List<CharacterRange>();
+            for(int i = 0; i < len; i++)
             {
-                colorBlend = new ColorBlend();
-
-                int len = title.Length;
-                List<CharacterRange> ranges = new List<CharacterRange>();
-                for(int i = 0; i < len; i++)
-                {
-                    ranges.Add(new CharacterRange(i, 1));
-                }
-                StringFormat format = new StringFormat();
-                format.SetMeasurableCharacterRanges(ranges.ToArray());
-
-                Region[] regions = gr.MeasureCharacterRanges(title, titleFont, new RectangleF(titleStart.X, titleStart.Y, 300, 50), format);
-
-                List<RectangleF> letterBounds = (from a in regions
-                                                 select a.GetBounds(gr)
-                                                ).ToList();
-                titleBounds = new RectangleF(
-                    letterBounds[0].Left,
-                    letterBounds[0].Top,
-                    letterBounds.Last().Right - letterBounds[0].Left,
-                    letterBounds[0].Height);
-
-                //dd1 = new DebugDraw(gra =>
-                //    {
-                //        gra.FillRectangle(Brushes.Cyan, titleBounds);
-                //        gra.DrawRectangles(Pens.Red, letterBounds.ToArray());
-                //        gra.DrawString(title, new Font("Microsoft Sans Serif", 16, FontStyle.Bold), Brushes.Black, titleStart);
-                //    });
-
-
-                List<float> positions = new List<float> { 0.0f };
-                foreach(var bounds in letterBounds)
-                {
-                    float val = (bounds.Right - titleBounds.Left) / titleBounds.Width;
-                    if(bounds != letterBounds.Last()) positions.Add(val);
-                    positions.Add(val);
-                }
-
-                //List<float> factors = new List<float>();
-                //for(int i = 0; i < positions.Count; i++)
-                //{
-                //    if(i % 4 < 2)
-                //        factors.Add(0f);
-                //    else
-                //        factors.Add(1f);
-                //}
-
-                colorBlend.Positions = positions.ToArray();
+                ranges.Add(new CharacterRange(i, 1));
             }
+            StringFormat format = new StringFormat();
+            format.SetMeasurableCharacterRanges(ranges.ToArray());
+
+            Region[] regions = gr.MeasureCharacterRanges(title, titleFont, new RectangleF(titleStart.X, titleStart.Y, 300, 50), format);
+
+            List<RectangleF> letterBounds = (from a in regions
+                                                select a.GetBounds(gr)
+                                            ).ToList();
+            titleBounds = new RectangleF(
+                letterBounds[0].Left,
+                letterBounds[0].Top,
+                letterBounds.Last().Right - letterBounds[0].Left,
+                letterBounds[0].Height);
+
+            //dd1 = new DebugDraw(gra =>
+            //    {
+            //        gra.FillRectangle(Brushes.Cyan, titleBounds);
+            //        gra.DrawRectangles(Pens.Red, letterBounds.ToArray());
+            //        gra.DrawString(title, new Font("Microsoft Sans Serif", 16, FontStyle.Bold), Brushes.Black, titleStart);
+            //    });
+
+
+            List<float> positions = new List<float> { 0.0f };
+            foreach(var bounds in letterBounds)
+            {
+                float val = (bounds.Right - titleBounds.Left) / titleBounds.Width;
+                if(bounds != letterBounds.Last()) positions.Add(val);
+                positions.Add(val);
+            }
+
+            //List<float> factors = new List<float>();
+            //for(int i = 0; i < positions.Count; i++)
+            //{
+            //    if(i % 4 < 2)
+            //        factors.Add(0f);
+            //    else
+            //        factors.Add(1f);
+            //}
+
+            colorBlend.Positions = positions.ToArray();            
         }
 
         private void MakeExtendedRainbow(int len)
@@ -97,21 +94,26 @@ namespace Memory_Boxes_WinForms
                                 a - 1 :
                                 (rainbow.Length - 1)
                            ]);
+                extendedRainbow.RemoveLast();
             }
         }
 
+        string title = "Memory Boxes";
         private RectangleF titleBounds;
         private PointF titleStart = new PointF(10f, 10f);
         private Font titleFont = new Font("Microsoft Sans Serif", 26, FontStyle.Bold);
         private ColorBlend colorBlend;
-        readonly Color[] rainbow = { Color.Red, Color.Orange, Color.GreenYellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet };
+        readonly Color[] rainbow = { Color.Red, Color.Orange, Color.Green, Color.Blue, Color.BlueViolet };
         private LinkedList<Color> extendedRainbow;
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-            string title = "Memory Boxes";
-            SetTitleColorBlend(title, e.Graphics);
-            MakeExtendedRainbow(title.Length);
+            if(colorBlend == null)
+                SetTitleColorBlend(title, e.Graphics);
+            if(extendedRainbow == null)
+                MakeExtendedRainbow(title.Length);
+
+            titleRainbowTimer.Start();
 
             colorBlend.Colors = extendedRainbow.SelectMany(col => new[] { col, col }).ToArray();
 
@@ -119,8 +121,14 @@ namespace Memory_Boxes_WinForms
             brush.InterpolationColors = colorBlend;
             e.Graphics.DrawString(title, titleFont, brush, titleStart);
         }
+
+        private void titleRainbowTimer_Tick(object sender, EventArgs e)
+        {
+            MakeExtendedRainbow(title.Length);
+            TitlePanel.Invalidate();
+        }
     }
-    public class FPSClock : Timer
+    public class FPSClock
     {
         System.Threading.Timer timer;
         readonly int FPS;

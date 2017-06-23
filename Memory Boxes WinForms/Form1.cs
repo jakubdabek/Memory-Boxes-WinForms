@@ -16,6 +16,7 @@ namespace Memory_Boxes_WinForms
         public Form1()
         {
             InitializeComponent();
+            this.CenterToScreen();
             rainbow = GenerateRainbowColors(15).ToArray();
             titleRainbowTimer.Interval = 200;
         }

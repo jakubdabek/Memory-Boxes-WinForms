@@ -16,6 +16,8 @@ namespace Memory_Boxes_WinForms
         public Form1()
         {
             InitializeComponent();
+            rainbow = GenerateRainbowColors(15).ToArray();
+            titleRainbowTimer.Interval = 200;
         }
 
         private void SetTitleColorBlend(string title, Graphics gr)
@@ -103,8 +105,27 @@ namespace Memory_Boxes_WinForms
         private PointF titleStart = new PointF(10f, 10f);
         private Font titleFont = new Font("Microsoft Sans Serif", 26, FontStyle.Bold);
         private ColorBlend colorBlend;
-        readonly Color[] rainbow = { Color.Red, Color.Orange, Color.Green, Color.Blue, Color.BlueViolet };
+        readonly Color[] rainbow;
         private LinkedList<Color> extendedRainbow;
+
+        List<Color> GenerateRainbowColors(int colorsCount)
+        {
+            double frequency = 2 * Math.PI / colorsCount;
+            double deltaR = Math.PI * 0 / 3;
+            double deltaG = Math.PI * 2 / 3;
+            double deltaB = Math.PI * 4 / 3;
+
+            List<Color> colors = new List<Color>();
+
+            for(int i = 0; i < colorsCount; i++)
+            {
+                colors.Add(Color.FromArgb(
+                    (int)(Math.Sin(frequency * i + deltaR) * 127.5 + 127.5),
+                    (int)(Math.Sin(frequency * i + deltaG) * 127.5 + 127.5),
+                    (int)(Math.Sin(frequency * i + deltaB) * 127.5 + 127.5)));
+            }
+            return colors;
+        }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
@@ -128,7 +149,8 @@ namespace Memory_Boxes_WinForms
             TitlePanel.Invalidate();
         }
     }
-    public class FPSClock
+    
+    public class FPSClock:Timer
     {
         System.Threading.Timer timer;
         readonly int FPS;

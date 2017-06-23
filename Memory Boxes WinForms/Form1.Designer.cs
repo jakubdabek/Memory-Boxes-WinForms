@@ -44,7 +44,6 @@
             // 
             // titleRainbowTimer
             // 
-            this.titleRainbowTimer.Interval = 750;
             this.titleRainbowTimer.Tick += new System.EventHandler(this.titleRainbowTimer_Tick);
             // 
             // Form1

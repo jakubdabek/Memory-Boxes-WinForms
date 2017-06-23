@@ -71,8 +71,8 @@ namespace Memory_Boxes_WinForms
 
             colorBlend.Positions = positions.ToArray();            
         }
-
-        private void MakeExtendedRainbow(int len)
+        [Obsolete("slow and shitty", true)]
+        private void MakeExtendedRainbow(int len, int dummy)
         {
             if(extendedRainbow == null)
             {
@@ -98,6 +98,30 @@ namespace Memory_Boxes_WinForms
                            ]);
                 extendedRainbow.RemoveLast();
             }
+        }
+
+        private int rainbowSequenceStep = 0;
+        private bool newRainbowReady = true;
+        private Color[] MakeExtendedRainbow(int len)
+        {
+            Color[] colors = new Color[len];
+            for(int i = 0; i < len; i++)
+            {
+                colors[i] = rainbow[(i + rainbowSequenceStep) % rainbow.Length];
+            }
+            if(rainbowSequenceStep-- <= 0) rainbowSequenceStep = rainbow.Length - 1;
+
+            return colors;
+        }
+        private T[] DoubleElements<T>(T[] list)
+        {
+            T[] newList = new T[list.Length * 2];
+            for(int i = 0; i < newList.Length; i+=2)
+            {
+                newList[i] = list[i / 2];
+                newList[i + 1] = list[i / 2];
+            }
+            return newList;
         }
 
         string title = "Memory Boxes";
@@ -131,12 +155,10 @@ namespace Memory_Boxes_WinForms
         {
             if(colorBlend == null)
                 SetTitleColorBlend(title, e.Graphics);
-            if(extendedRainbow == null)
-                MakeExtendedRainbow(title.Length);
 
             titleRainbowTimer.Start();
-
-            colorBlend.Colors = extendedRainbow.SelectMany(col => new[] { col, col }).ToArray();
+            if(newRainbowReady)
+                colorBlend.Colors = DoubleElements(MakeExtendedRainbow(title.Length));
 
             LinearGradientBrush brush = new LinearGradientBrush(titleBounds.Location, new PointF(titleBounds.Right, titleBounds.Top), Color.Empty, Color.Empty);
             brush.InterpolationColors = colorBlend;
@@ -145,7 +167,7 @@ namespace Memory_Boxes_WinForms
 
         private void titleRainbowTimer_Tick(object sender, EventArgs e)
         {
-            MakeExtendedRainbow(title.Length);
+            newRainbowReady = true;
             TitlePanel.Invalidate();
         }
     }

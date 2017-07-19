@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using CellPos = System.Windows.Forms.TableLayoutPanelCellPosition;
+
 namespace Memory_Boxes_WinForms
 {
     public class Utility
@@ -26,7 +28,7 @@ namespace Memory_Boxes_WinForms
         public static List<T> DoubleElements<T>(List<T> list)
         {
             List<T> newList = new List<T>(list.Count * 2);
-            for(int i = 0; i < list.Count; i ++)
+            for(int i = 0; i < list.Count; i++)
             {
                 newList.AddRange(new[] { list[i], list[i] });
             }
@@ -87,11 +89,11 @@ namespace Memory_Boxes_WinForms
 
             static ColorBlend GenerateUniformColorBlend(int colorsCount, int count, int offset = 0)
             {
-                ColorBlend cb = new ColorBlend();
-
-                cb.Colors = GenerateExtendedRainbow(colorsCount, count, offset).ToArray();
-                cb.Positions = UniformValuesFrom0to1(count).ToArray();
-
+                ColorBlend cb = new ColorBlend()
+                {
+                    Colors = GenerateExtendedRainbow(colorsCount, count, offset).ToArray(),
+                    Positions = UniformValuesFrom0to1(count).ToArray()
+                };
                 return cb;
             }
 
@@ -122,11 +124,21 @@ namespace Memory_Boxes_WinForms
 
                     MadeBrushes.Add(text, this);
 
-                    StringFormat format = new StringFormat();
-                    format.SetMeasurableCharacterRanges(generateSingleCharacterRanges(count).ToArray());
+                    SizeF size;
+                    Region[] regions;
+                    using(StringFormat format = new StringFormat())
+                    {
+                        format.SetMeasurableCharacterRanges(generateSingleCharacterRanges(count).ToArray());
 
-                    SizeF size = graphics.MeasureString(text, font);
-                    Region[] regions = graphics.MeasureCharacterRanges(text, font, new RectangleF(startingPoint, size), format);
+                        size = graphics.MeasureString(text, font);
+                        regions = graphics.MeasureCharacterRanges(text, font, new RectangleF(startingPoint, size), format);
+                    }
+
+                    //StringFormat format = new StringFormat();
+                    //format.SetMeasurableCharacterRanges(generateSingleCharacterRanges(count).ToArray());
+
+                    //SizeF size = graphics.MeasureString(text, font);
+                    //Region[] regions = graphics.MeasureCharacterRanges(text, font, new RectangleF(startingPoint, size), format);
 
                     var letterBounds = regions.Select(r => r.GetBounds(graphics)).ToList();
 
@@ -146,13 +158,15 @@ namespace Memory_Boxes_WinForms
                         positions.Add(val);
                     }
 
-                    ColorBlend colorBlend = new ColorBlend();
-                    colorBlend.Colors = DoubleElements(GenerateExtendedRainbow(colorsCount, count)).ToArray();
-                    colorBlend.Positions = positions.ToArray();
-
-                    this.brush = new LinearGradientBrush(textBounds.Location, new PointF(textBounds.Right, textBounds.Top), Color.Empty, Color.Empty);
-                    this.brush.InterpolationColors = colorBlend;
-
+                    ColorBlend colorBlend = new ColorBlend()
+                    {
+                        Colors = DoubleElements(GenerateExtendedRainbow(colorsCount, count)).ToArray(),
+                        Positions = positions.ToArray()
+                    };
+                    this.brush = new LinearGradientBrush(textBounds.Location, new PointF(textBounds.Right, textBounds.Top), Color.Empty, Color.Empty)
+                    {
+                        InterpolationColors = colorBlend
+                    };
                     drawAction = (gr, next) =>
                     {
                         gr.DrawString(text, font, brush, startingPoint);
@@ -181,25 +195,84 @@ namespace Memory_Boxes_WinForms
                 private static Dictionary<string, TextBrush> MadeBrushes = new Dictionary<string, TextBrush>();
             }
         }
+
+        [Flags]
+        public enum CenterStyle { Vertical = 0b01, Horizontal = 0b10, Bilateral = Vertical | Horizontal }
+
+        public static Rectangle GetCenterPositionInControl(Control parent, Rectangle childLocation, CenterStyle centerStyle = CenterStyle.Bilateral)
+        {
+            if(centerStyle.HasFlag(CenterStyle.Horizontal))
+                childLocation.X = (parent.ClientSize.Width - childLocation.Width) / 2;
+            if(centerStyle.HasFlag(CenterStyle.Vertical))
+                childLocation.Y = (parent.ClientSize.Height - childLocation.Height) / 2;
+            return childLocation;
+        }
+
+        public static void CenterInControl(Control child, Control parent, CenterStyle centerStyle = CenterStyle.Bilateral)
+        {
+            child.Location = GetCenterPositionInControl(parent, child.Bounds, centerStyle).Location;
+        }
+    }
+    
+    public static class Extensions
+    {
+        public static void Deconstruct<T>(this IEnumerable<T> sequence, out T val1, out T val2, out T val3, out T val4, out T val5, out T val6, out T val7)
+        {
+            var a = sequence.ToList();
+            (val1, val2, val3, val4, val5, val6, val7) =
+                (a.ElementAtOrDefault(0),
+                a.ElementAtOrDefault(1),
+                a.ElementAtOrDefault(2),
+                a.ElementAtOrDefault(3),
+                a.ElementAtOrDefault(4),
+                a.ElementAtOrDefault(5),
+                a.ElementAtOrDefault(6));
+        }
+
+        public static void Deconstruct<T>(this IEnumerable<T> sequence, out T val1, out T val2)
+        {
+            if(sequence.Count() < 2) throw new ArgumentException("Sequence too small for deconstruction", nameof(sequence));
+            var a = sequence.Take(2).ToList();
+            (val1, val2) = (a[0], a[1]);
+        }
+
+        public static CellPos Add(this CellPos pos, int column, int row)
+        {
+            return new CellPos(pos.Column + column, pos.Row + row);
+        }
+
+        public static CellPos Add(this CellPos pos, CellPos addend)
+        {
+            return pos.Add(addend.Column, addend.Row);
+        }
+
+        public static IEnumerable<ValueTuple<T1, T2>> Zip<T1, T2>(this IEnumerable<T1> left, IEnumerable<T2> right)
+        {
+            var leftEnum = left.GetEnumerator();
+            var rightEnum = right.GetEnumerator();
+            while(leftEnum.MoveNext() & rightEnum.MoveNext())
+                yield return (leftEnum.Current, rightEnum.Current);
+        }
     }
 
-    public partial class Form1 : Form
+    public partial class Form1
     {
         private bool nextRainbowStep = true;
 
-        string title = "Memory Boxes";
-        private PointF titleStart = new PointF(10f, 10f);
-        private Font titleFont = new Font("Microsoft Sans Serif", 26, FontStyle.Bold);
+        string titleText = "Memory Boxes";
+        private Point titleStartLocation = new Point(10, 50);
+        private Font titleFont = new Font("Microsoft Sans Serif", 30, FontStyle.Bold);
 
         Action<Graphics, bool> DrawTitleText;
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-            titleRainbowTimer.Start();
+            if(!titleRainbowTimer.Enabled)
+                titleRainbowTimer.Start();
 
             if(DrawTitleText is null)
             {
-                DrawTitleText = Utility.RainbowGenerator.TextBrush.MakeDrawAction(title, e.Graphics, titleFont, titleStart);
+                DrawTitleText = Utility.RainbowGenerator.TextBrush.MakeDrawAction(titleText, e.Graphics, titleFont, titleStartLocation);
             }
 
             DrawTitleText(e.Graphics, nextRainbowStep);

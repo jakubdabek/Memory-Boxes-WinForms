@@ -35,31 +35,31 @@
             // 
             // dialogTablePanel
             // 
-            this.dialogTablePanel.ColumnCount = 6;
-            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.dialogTablePanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.dialogTablePanel.Location = new System.Drawing.Point(0, 0);
+            this.dialogTablePanel.ColumnCount = 8;
+            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.dialogTablePanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.dialogTablePanel.Location = new System.Drawing.Point(12, 12);
             this.dialogTablePanel.Name = "dialogTablePanel";
-            this.dialogTablePanel.RowCount = 8;
-            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.dialogTablePanel.Size = new System.Drawing.Size(331, 204);
+            this.dialogTablePanel.RowCount = 6;
+            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.dialogTablePanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.dialogTablePanel.Size = new System.Drawing.Size(320, 240);
             this.dialogTablePanel.TabIndex = 0;
             // 
             // confirmSizeChoiceButton
             // 
-            this.confirmSizeChoiceButton.Location = new System.Drawing.Point(87, 210);
+            this.confirmSizeChoiceButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.confirmSizeChoiceButton.Location = new System.Drawing.Point(94, 267);
             this.confirmSizeChoiceButton.Name = "confirmSizeChoiceButton";
             this.confirmSizeChoiceButton.Size = new System.Drawing.Size(75, 23);
             this.confirmSizeChoiceButton.TabIndex = 1;
@@ -69,8 +69,9 @@
             // 
             // cancelSizeChoiceButton
             // 
+            this.cancelSizeChoiceButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cancelSizeChoiceButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelSizeChoiceButton.Location = new System.Drawing.Point(169, 209);
+            this.cancelSizeChoiceButton.Location = new System.Drawing.Point(175, 267);
             this.cancelSizeChoiceButton.Name = "cancelSizeChoiceButton";
             this.cancelSizeChoiceButton.Size = new System.Drawing.Size(75, 23);
             this.cancelSizeChoiceButton.TabIndex = 2;
@@ -83,17 +84,20 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelSizeChoiceButton;
-            this.ClientSize = new System.Drawing.Size(331, 245);
+            this.ClientSize = new System.Drawing.Size(344, 302);
             this.ControlBox = false;
             this.Controls.Add(this.cancelSizeChoiceButton);
             this.Controls.Add(this.confirmSizeChoiceButton);
             this.Controls.Add(this.dialogTablePanel);
+            this.DoubleBuffered = true;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SizeDialogForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SizeDialogForm";
             this.ResumeLayout(false);
 

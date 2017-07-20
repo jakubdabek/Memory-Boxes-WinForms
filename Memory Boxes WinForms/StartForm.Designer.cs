@@ -1,6 +1,6 @@
 ﻿namespace Memory_Boxes_WinForms
 {
-    partial class Form1
+    partial class StartForm
     {
         /// <summary>
         /// Required designer variable.
@@ -67,6 +67,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 312);
             this.Controls.Add(this.TitlePanel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Memory boxes";

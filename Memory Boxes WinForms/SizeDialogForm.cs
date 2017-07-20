@@ -76,21 +76,22 @@ namespace Memory_Boxes_WinForms
             }
             else
             {
-                var panels = dialogTablePanel.Controls.Cast<Panel>().Where(panel=>panel.BackColor == SystemColors.HotTrack).ToList();
-                List<Color> colors = panels.Select(panel => panel.BackColor).ToList();
+                var panels = dialogTablePanel.Controls.Cast<Panel>().Where(panel => panel.BackColor == SystemColors.HotTrack).ToList();
+                //List<Color> colors = panels.Select(panel => panel.BackColor).ToList();
 
                 foreach(var item in panels) item.BackColor = Color.FromArgb(200, 0, 0);
 
                 this.Invalidate();
 
-                System.Threading.Timer timer = new System.Threading.Timer(delegate
+                System.Threading.Timer timer = new System.Threading.Timer(
+                delegate
                 {
                     //foreach(var (panel, color) in panels.Zip(colors))
                     //    panel.BackColor = color;
                     foreach(var panel in panels) panel.BackColor = SystemColors.HotTrack;
 
                     this.Invalidate();
-                }, 
+                },
                 null, 200, System.Threading.Timeout.Infinite);
             }
         }

@@ -12,12 +12,12 @@ using System.Reflection;
 
 namespace Memory_Boxes_WinForms
 {
-    public partial class Form1 : Form
+    public partial class StartForm : Form
     {
-        public Form1()
+        public StartForm()
         {
             InitializeComponent();
-            this.CenterToScreen();            
+            this.CenterToScreen();
             titleRainbowTimer.Interval = 200;
 
             //typeof(Panel).InvokeMember("DoubleBuffered",
@@ -54,6 +54,9 @@ namespace Memory_Boxes_WinForms
                 ).Location;
         }
 
+        GamePanel gamePanel;
+        GameForm gameForm;
+
         private void startButton_Click(object sender, EventArgs e)
         {
             using(SizeDialogForm dialog = new SizeDialogForm())
@@ -61,6 +64,9 @@ namespace Memory_Boxes_WinForms
                 if(dialog.ShowDialog() == DialogResult.OK)
                 {
                     var gridSize = dialog.GridSize;
+                    this.Visible = false;
+                    gameForm = new GameForm(() => this.Visible = true);
+                    gameForm.Show();
                 }
             }
         }

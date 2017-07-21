@@ -39,22 +39,21 @@ namespace Memory_Boxes_WinForms
         private void Form1_Load(object sender, EventArgs e)
         {
             Rectangle textRectF;
-            using(Graphics gr = TitlePanel.CreateGraphics())
+            using(Graphics gr = titlePanel.CreateGraphics())
                 textRectF = new Rectangle(titleStartLocation, Size.Ceiling(gr.MeasureString(titleText, titleFont)));
 
-            TitlePanel.Width = textRectF.Width + 20;
+            titlePanel.Width = textRectF.Width + 20;
 
-            Utility.CenterInControl(TitlePanel, this, Utility.CenterStyle.Horizontal);
-            Utility.CenterInControl(startButton, TitlePanel, Utility.CenterStyle.Horizontal);
+            Utility.CenterInControl(titlePanel, this, Utility.CenterStyle.Horizontal);
+            Utility.CenterInControl(startButton, titlePanel, Utility.CenterStyle.Horizontal);
 
             titleStartLocation = Utility.GetCenterPositionInControl(
-                TitlePanel, 
+                titlePanel, 
                 Rectangle.Round(textRectF), 
                 Utility.CenterStyle.Horizontal
                 ).Location;
         }
 
-        GamePanel gamePanel;
         GameForm gameForm;
 
         private void startButton_Click(object sender, EventArgs e)
@@ -65,7 +64,7 @@ namespace Memory_Boxes_WinForms
                 {
                     var gridSize = dialog.GridSize;
                     this.Visible = false;
-                    gameForm = new GameForm(() => this.Visible = true);
+                    gameForm = new GameForm(gridSize, () => this.Visible = true);
                     gameForm.Show();
                 }
             }

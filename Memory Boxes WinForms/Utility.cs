@@ -242,7 +242,7 @@ namespace Memory_Boxes_WinForms
         private void titleRainbowTimer_Tick(object sender, EventArgs e)
         {
             nextRainbowStep = true;
-            TitlePanel.Invalidate();
+            titlePanel.Invalidate();
         }
     }
 }

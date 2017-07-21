@@ -48,16 +48,14 @@ namespace Memory_Boxes_WinForms
 
             //GridSize = new TableLayoutPanelCellPosition(colMax + 1, rowMax + 1);
 
-            TableLayoutPanelCellPosition ZeroBasedTableOffset = new TableLayoutPanelCellPosition(1, 1);
-
-            GridSize = dialogTablePanel.GetPositionFromControl(sender as Panel).Add(ZeroBasedTableOffset);
-            (int colMax, int rowMax) = (GridSize.Column - 1, GridSize.Row - 1);
+            TableLayoutPanelCellPosition CornerCellPosition = dialogTablePanel.GetPositionFromControl(sender as Panel);
+            GridSize = new Size(CornerCellPosition.Column + 1, CornerCellPosition.Row + 1);
 
             for(int i = 0; i < dialogTablePanel.ColumnCount; i++)
             {
                 for(int j = 0; j < dialogTablePanel.RowCount; j++)
                 {
-                    if(i <= colMax & j <= rowMax)
+                    if(i <= CornerCellPosition.Column && j <= CornerCellPosition.Row)
                         dialogTablePanel.GetControlFromPosition(i, j).BackColor = SystemColors.HotTrack;
                     else
                         dialogTablePanel.GetControlFromPosition(i, j).BackColor = SystemColors.Control;
@@ -65,11 +63,11 @@ namespace Memory_Boxes_WinForms
             }
         }
 
-        public TableLayoutPanelCellPosition GridSize { get; private set; } = new TableLayoutPanelCellPosition(1, 1);
+        public Size GridSize { get; private set; } = new Size(4, 3);
 
         private void confirmSizeChoiceButton_Click(object sender, EventArgs e)
         {
-            if(this.GridSize.Column * this.GridSize.Row % 2 == 0)
+            if(this.GridSize.Width * this.GridSize.Height % 2 == 0)
             {
                 this.DialogResult = DialogResult.OK;
                 this.Close();

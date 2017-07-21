@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -26,7 +27,7 @@ namespace Memory_Boxes_WinForms
         public static List<T> DoubleElements<T>(List<T> list)
         {
             List<T> newList = new List<T>(list.Count * 2);
-            for(int i = 0; i < list.Count; i ++)
+            for(int i = 0; i < list.Count; i++)
             {
                 newList.AddRange(new[] { list[i], list[i] });
             }
@@ -87,11 +88,11 @@ namespace Memory_Boxes_WinForms
 
             static ColorBlend GenerateUniformColorBlend(int colorsCount, int count, int offset = 0)
             {
-                ColorBlend cb = new ColorBlend();
-
-                cb.Colors = GenerateExtendedRainbow(colorsCount, count, offset).ToArray();
-                cb.Positions = UniformValuesFrom0to1(count).ToArray();
-
+                ColorBlend cb = new ColorBlend()
+                {
+                    Colors = GenerateExtendedRainbow(colorsCount, count, offset).ToArray(),
+                    Positions = UniformValuesFrom0to1(count).ToArray()
+                };
                 return cb;
             }
 
@@ -122,11 +123,21 @@ namespace Memory_Boxes_WinForms
 
                     MadeBrushes.Add(text, this);
 
-                    StringFormat format = new StringFormat();
-                    format.SetMeasurableCharacterRanges(generateSingleCharacterRanges(count).ToArray());
+                    SizeF size;
+                    Region[] regions;
+                    using(StringFormat format = new StringFormat())
+                    {
+                        format.SetMeasurableCharacterRanges(generateSingleCharacterRanges(count).ToArray());
 
-                    SizeF size = graphics.MeasureString(text, font);
-                    Region[] regions = graphics.MeasureCharacterRanges(text, font, new RectangleF(startingPoint, size), format);
+                        size = graphics.MeasureString(text, font);
+                        regions = graphics.MeasureCharacterRanges(text, font, new RectangleF(startingPoint, size), format);
+                    }
+
+                    //StringFormat format = new StringFormat();
+                    //format.SetMeasurableCharacterRanges(generateSingleCharacterRanges(count).ToArray());
+
+                    //SizeF size = graphics.MeasureString(text, font);
+                    //Region[] regions = graphics.MeasureCharacterRanges(text, font, new RectangleF(startingPoint, size), format);
 
                     var letterBounds = regions.Select(r => r.GetBounds(graphics)).ToList();
 
@@ -146,13 +157,15 @@ namespace Memory_Boxes_WinForms
                         positions.Add(val);
                     }
 
-                    ColorBlend colorBlend = new ColorBlend();
-                    colorBlend.Colors = DoubleElements(GenerateExtendedRainbow(colorsCount, count)).ToArray();
-                    colorBlend.Positions = positions.ToArray();
-
-                    this.brush = new LinearGradientBrush(textBounds.Location, new PointF(textBounds.Right, textBounds.Top), Color.Empty, Color.Empty);
-                    this.brush.InterpolationColors = colorBlend;
-
+                    ColorBlend colorBlend = new ColorBlend()
+                    {
+                        Colors = DoubleElements(GenerateExtendedRainbow(colorsCount, count)).ToArray(),
+                        Positions = positions.ToArray()
+                    };
+                    this.brush = new LinearGradientBrush(textBounds.Location, new PointF(textBounds.Right, textBounds.Top), Color.Empty, Color.Empty)
+                    {
+                        InterpolationColors = colorBlend
+                    };
                     drawAction = (gr, next) =>
                     {
                         gr.DrawString(text, font, brush, startingPoint);
@@ -181,25 +194,45 @@ namespace Memory_Boxes_WinForms
                 private static Dictionary<string, TextBrush> MadeBrushes = new Dictionary<string, TextBrush>();
             }
         }
-    }
 
-    public partial class Form1 : Form
+        [Flags]
+        public enum CenterStyle { Vertical = 0b01, Horizontal = 0b10, Bilateral = Vertical | Horizontal }
+
+        public static Rectangle GetCenterPositionInControl(Control parent, Rectangle childLocation, CenterStyle centerStyle = CenterStyle.Bilateral)
+        {
+            if(centerStyle.HasFlag(CenterStyle.Horizontal))
+                childLocation.X = (parent.ClientSize.Width - childLocation.Width) / 2;
+            if(centerStyle.HasFlag(CenterStyle.Vertical))
+                childLocation.Y = (parent.ClientSize.Height - childLocation.Height) / 2;
+            return childLocation;
+        }
+
+        public static void CenterInControl(Control child, Control parent, CenterStyle centerStyle = CenterStyle.Bilateral)
+        {
+            child.Location = GetCenterPositionInControl(parent, child.Bounds, centerStyle).Location;
+        }
+    }
+    
+    
+
+    public partial class StartForm
     {
         private bool nextRainbowStep = true;
 
-        string title = "Memory Boxes";
-        private PointF titleStart = new PointF(10f, 10f);
-        private Font titleFont = new Font("Microsoft Sans Serif", 26, FontStyle.Bold);
+        string titleText = "Memory Boxes";
+        private Point titleStartLocation = new Point(10, 50);
+        private Font titleFont = new Font("Microsoft Sans Serif", 30, FontStyle.Bold);
 
         Action<Graphics, bool> DrawTitleText;
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-            titleRainbowTimer.Start();
+            if(!titleRainbowTimer.Enabled)
+                titleRainbowTimer.Start();
 
             if(DrawTitleText is null)
             {
-                DrawTitleText = Utility.RainbowGenerator.TextBrush.MakeDrawAction(title, e.Graphics, titleFont, titleStart);
+                DrawTitleText = Utility.RainbowGenerator.TextBrush.MakeDrawAction(titleText, e.Graphics, titleFont, titleStartLocation);
             }
 
             DrawTitleText(e.Graphics, nextRainbowStep);
@@ -209,7 +242,7 @@ namespace Memory_Boxes_WinForms
         private void titleRainbowTimer_Tick(object sender, EventArgs e)
         {
             nextRainbowStep = true;
-            TitlePanel.Invalidate();
+            titlePanel.Invalidate();
         }
     }
 }

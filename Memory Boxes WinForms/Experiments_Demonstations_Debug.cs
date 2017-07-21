@@ -29,8 +29,10 @@ namespace Memory_Boxes_WinForms
             RectangleF layoutRect = new RectangleF(x, y, width, height);
 
             // Set string format.
-            StringFormat stringFormat = new StringFormat();
-            stringFormat.FormatFlags = StringFormatFlags.DirectionVertical;
+            StringFormat stringFormat = new StringFormat()
+            {
+                FormatFlags = StringFormatFlags.DirectionVertical
+            };
             stringFormat.SetMeasurableCharacterRanges(characterRanges);
 
             // Draw string to screen.
@@ -123,15 +125,19 @@ namespace Memory_Boxes_WinForms
             Point endPoint2 = new Point(140, 110);
             float[] myFactors = { 0f, 0f, 1f, 1f, 0f, 0f, 1f, 0f };
             float[] myPositions = { 0.0f, .2f, .2f, .4f, .4f, .6f, .8f, 1.0f };
-            Blend myBlend = new Blend();
-            myBlend.Factors = myFactors;
-            myBlend.Positions = myPositions;
+            Blend myBlend = new Blend()
+            {
+                Factors = myFactors,
+                Positions = myPositions
+            };
             LinearGradientBrush lgBrush2 = new LinearGradientBrush(
                 startPoint2,
                 endPoint2,
                 Color.Blue,
-                Color.Red);
-            lgBrush2.Blend = myBlend;
+                Color.Red)
+                {
+                    Blend = myBlend
+                };
             Rectangle ellipseRect2 = new Rectangle(20, 110, 120, 80);
             e.Graphics.FillEllipse(lgBrush2, ellipseRect2);
         }

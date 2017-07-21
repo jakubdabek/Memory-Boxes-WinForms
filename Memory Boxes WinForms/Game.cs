@@ -6,18 +6,23 @@ using System.Threading.Tasks;
 
 namespace Memory_Boxes_WinForms
 {
-    public class Game
+    partial class GameForm
     {
-        public static Game state;
-        private bool _inMainLoop = false;
-
-        public void MainGameLoop(object obj)
+        class Game
         {
-            if(!_inMainLoop)
-            {
-                _inMainLoop = true;
+            public static Game state;
+            private bool _inMainLoop = false;
 
-                _inMainLoop = false;
+            public void MainGameLoop(object obj)
+            {
+                if(!_inMainLoop)
+                {
+                    _inMainLoop = true;
+
+
+
+                    _inMainLoop = false;
+                }
             }
         }
     }

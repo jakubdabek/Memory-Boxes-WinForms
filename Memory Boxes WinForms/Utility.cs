@@ -27,16 +27,16 @@ namespace Memory_Boxes_WinForms
         public static List<T> DoubleElements<T>(List<T> list)
         {
             List<T> newList = new List<T>(list.Count * 2);
-            for(int i = 0; i < list.Count; i++)
+            foreach(T element in list)
             {
-                newList.AddRange(new[] { list[i], list[i] });
+                newList.AddRange(new[] { element, element });
             }
             return newList;
         }
 
         public static class RainbowGenerator
         {
-            static Dictionary<int, List<Color>> rainbows = new Dictionary<int, List<Color>>();
+            static readonly Dictionary<int, List<Color>> rainbows = new Dictionary<int, List<Color>>();
 
             static List<Color> GenerateBaseRainbow(int colorsCount)
             {
@@ -123,13 +123,12 @@ namespace Memory_Boxes_WinForms
 
                     MadeBrushes.Add(text, this);
 
-                    SizeF size;
                     Region[] regions;
-                    using(StringFormat format = new StringFormat())
+                    using(var format = new StringFormat())
                     {
                         format.SetMeasurableCharacterRanges(generateSingleCharacterRanges(count).ToArray());
 
-                        size = graphics.MeasureString(text, font);
+                        var size = graphics.MeasureString(text, font);
                         regions = graphics.MeasureCharacterRanges(text, font, new RectangleF(startingPoint, size), format);
                     }
 
@@ -187,6 +186,7 @@ namespace Memory_Boxes_WinForms
 
                 public static Action<Graphics, bool> MakeDrawAction(string text, Graphics graphics, Font font, PointF startingPoint)
                 {
+                    // ReSharper disable once ObjectCreationAsStatement
                     new TextBrush(text, graphics, font, startingPoint, out var drawAction);
                     return drawAction;
                 }
@@ -212,16 +212,16 @@ namespace Memory_Boxes_WinForms
             child.Location = GetCenterPositionInControl(parent, child.Bounds, centerStyle).Location;
         }
     }
-    
-    
+
+
 
     public partial class StartForm
     {
-        private bool nextRainbowStep = true;
+        bool nextRainbowStep = true;
 
         string titleText = "Memory Boxes";
-        private Point titleStartLocation = new Point(10, 50);
-        private Font titleFont = new Font("Microsoft Sans Serif", 30, FontStyle.Bold);
+        Point titleInitLocation = new Point(10, 50);
+        Font titleFont = new Font("Microsoft Sans Serif", 30, FontStyle.Bold);
 
         Action<Graphics, bool> DrawTitleText;
 
@@ -232,7 +232,7 @@ namespace Memory_Boxes_WinForms
 
             if(DrawTitleText is null)
             {
-                DrawTitleText = Utility.RainbowGenerator.TextBrush.MakeDrawAction(titleText, e.Graphics, titleFont, titleStartLocation);
+                DrawTitleText = Utility.RainbowGenerator.TextBrush.MakeDrawAction(titleText, e.Graphics, titleFont, titleInitLocation);
             }
 
             DrawTitleText(e.Graphics, nextRainbowStep);

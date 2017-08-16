@@ -58,8 +58,7 @@ namespace Memory_Boxes_WinForms
 
             // Extract the region data.
             System.Drawing.Drawing2D.RegionData region1Data = region1.GetRegionData();
-            byte[] data1;
-            data1 = region1Data.Data;
+            var data1 = region1Data.Data;
 
             // Create a second region.
             Region region2 = new Region();

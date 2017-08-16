@@ -8,22 +8,21 @@ namespace Memory_Boxes_WinForms
 {
     partial class GameForm
     {
-        class Game
+        const int FPS = 60;
+
+        void InitializeGame()
         {
-            public static Game state;
-            private bool _inMainLoop = false;
+            Random rand = new Random();
 
-            public void MainGameLoop(object obj)
-            {
-                if(!_inMainLoop)
-                {
-                    _inMainLoop = true;
+            mainLoopTimer.Interval = 1000 / FPS;
+            mainLoopTimer.Start();
+        }
 
+        bool _starting = true;
 
+        private void mainLoopTimer_Tick(object sender, EventArgs e)
+        {
 
-                    _inMainLoop = false;
-                }
-            }
         }
     }
 }

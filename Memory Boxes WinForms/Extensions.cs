@@ -31,8 +31,8 @@ namespace Memory_Boxes_WinForms
 
         public static void Deconstruct<T>(this IEnumerable<T> sequence, out T val1, out T val2)
         {
-            if(sequence.Count() < 2) throw new ArgumentException("Sequence too small for deconstruction", nameof(sequence));
-            var a = sequence.Take(2).ToList();
+            var a = sequence.ToArray();
+            if(a.Length < 2) throw new ArgumentException("Sequence too small for deconstruction", nameof(sequence));
             (val1, val2) = (a[0], a[1]);
         }
 
@@ -42,10 +42,10 @@ namespace Memory_Boxes_WinForms
 
         public static IEnumerable<ValueTuple<T1, T2>> Zip<T1, T2>(this IEnumerable<T1> left, IEnumerable<T2> right)
         {
-            var leftEnum = left.GetEnumerator();
-            var rightEnum = right.GetEnumerator();
-            while(leftEnum.MoveNext() & rightEnum.MoveNext())
-                yield return (leftEnum.Current, rightEnum.Current);
+            using(var leftEnum = left.GetEnumerator())
+            using(var rightEnum = right.GetEnumerator())
+                while(leftEnum.MoveNext() & rightEnum.MoveNext())
+                    yield return (leftEnum.Current, rightEnum.Current);
         }
 
         public static void Add(this IList seq, object obj, int count)

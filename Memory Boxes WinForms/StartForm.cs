@@ -40,14 +40,14 @@ namespace Memory_Boxes_WinForms
         {
             Rectangle textRectF;
             using(Graphics gr = titlePanel.CreateGraphics())
-                textRectF = new Rectangle(titleStartLocation, Size.Ceiling(gr.MeasureString(titleText, titleFont)));
+                textRectF = new Rectangle(titleInitLocation, Size.Ceiling(gr.MeasureString(titleText, titleFont)));
 
             titlePanel.Width = textRectF.Width + 20;
 
             Utility.CenterInControl(titlePanel, this, Utility.CenterStyle.Horizontal);
             Utility.CenterInControl(startButton, titlePanel, Utility.CenterStyle.Horizontal);
 
-            titleStartLocation = Utility.GetCenterPositionInControl(
+            titleInitLocation = Utility.GetCenterPositionInControl(
                 titlePanel, 
                 Rectangle.Round(textRectF), 
                 Utility.CenterStyle.Horizontal

@@ -12,8 +12,7 @@ namespace Memory_Boxes_WinForms
 {
     public partial class GameForm : Form
     {
-        Action _showParent;
-        Size gridSize;
+        readonly Size gridSize;
         GamePanel mainGamePanel;
 
         public GameForm(Size size, Action showParent)
@@ -21,9 +20,10 @@ namespace Memory_Boxes_WinForms
             _showParent = showParent;
             this.gridSize = size;
             InitializeComponent();
-            //mainGamePanel = new GamePanel(size, this);
         }
 
+        //Used after closing to show main menu
+        readonly Action _showParent;
         private void GameForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             _showParent();
@@ -31,14 +31,17 @@ namespace Memory_Boxes_WinForms
 
         private void GameForm_Load(object sender, EventArgs e)
         {
-            //this.Size = new Size(gridSize.Width * CellSize, gridSize.Height * CellSize) + _Padding;
             mainGamePanel = new GamePanel(gridSize, this);
             this.Size = mainGamePanel.Size + _Padding;
             Utility.CenterInControl(mainGamePanel, this);
             this.CenterToScreen();
+
+            InitializeGame();
         }
 
         const int CellSize = 80;
+        ///<summary>Used for manually setting form's size with a centered control</summary>
+        ///<remarks>Distance from the inner edges of the window is 12px</remarks>
         static readonly Size _Padding = new Size(36, 58);
     }
 }

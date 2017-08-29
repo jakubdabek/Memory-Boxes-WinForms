@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Memory_Boxes_WinForms
 {
-    public class Utility
+    public static class Utility
     {
         public static T[] DoubleElements<T>(T[] list)
         {
@@ -198,51 +198,18 @@ namespace Memory_Boxes_WinForms
         [Flags]
         public enum CenterStyle { Vertical = 0b01, Horizontal = 0b10, Bilateral = Vertical | Horizontal }
 
-        public static Rectangle GetCenterPositionInControl(Control parent, Rectangle childLocation, CenterStyle centerStyle = CenterStyle.Bilateral)
+        public static Rectangle GetCenterPositionInControl(Control parent, Rectangle childRect, CenterStyle centerStyle = CenterStyle.Bilateral)
         {
             if(centerStyle.HasFlag(CenterStyle.Horizontal))
-                childLocation.X = (parent.ClientSize.Width - childLocation.Width) / 2;
+                childRect.X = (parent.ClientSize.Width - childRect.Width) / 2;
             if(centerStyle.HasFlag(CenterStyle.Vertical))
-                childLocation.Y = (parent.ClientSize.Height - childLocation.Height) / 2;
-            return childLocation;
+                childRect.Y = (parent.ClientSize.Height - childRect.Height) / 2;
+            return childRect;
         }
 
         public static void CenterInControl(Control child, Control parent, CenterStyle centerStyle = CenterStyle.Bilateral)
         {
             child.Location = GetCenterPositionInControl(parent, child.Bounds, centerStyle).Location;
-        }
-    }
-
-
-
-    public partial class StartForm
-    {
-        bool nextRainbowStep = true;
-
-        string titleText = "Memory Boxes";
-        Point titleInitLocation = new Point(10, 50);
-        Font titleFont = new Font("Microsoft Sans Serif", 30, FontStyle.Bold);
-
-        Action<Graphics, bool> DrawTitleText;
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-            if(!titleRainbowTimer.Enabled)
-                titleRainbowTimer.Start();
-
-            if(DrawTitleText is null)
-            {
-                DrawTitleText = Utility.RainbowGenerator.TextBrush.MakeDrawAction(titleText, e.Graphics, titleFont, titleInitLocation);
-            }
-
-            DrawTitleText(e.Graphics, nextRainbowStep);
-            nextRainbowStep = false;
-        }
-
-        private void titleRainbowTimer_Tick(object sender, EventArgs e)
-        {
-            nextRainbowStep = true;
-            titlePanel.Invalidate();
         }
     }
 }

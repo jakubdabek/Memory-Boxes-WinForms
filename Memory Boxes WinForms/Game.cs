@@ -1,28 +1,36 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Memory_Boxes_WinForms
+namespace Memory_Boxes_WinForms.Game
 {
-    partial class GameForm
+    partial class GameBoard
     {
         const int FPS = 60;
+
+        public Stopwatch stopwatch;
 
         void InitializeGame()
         {
             Random rand = new Random();
 
-            mainLoopTimer.Interval = 1000 / FPS;
-            mainLoopTimer.Start();
+            stopwatch = Stopwatch.StartNew();
+            //timeTimer.Start();
         }
 
-        bool _starting = true;
+        bool _paused = true;
 
-        private void mainLoopTimer_Tick(object sender, EventArgs e)
+        public void Pause()
         {
+            _paused = true;
+        }
 
+        public void Unpause()
+        {
+            _paused = false;
         }
     }
 }

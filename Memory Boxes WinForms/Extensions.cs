@@ -48,12 +48,33 @@ namespace Memory_Boxes_WinForms
                     yield return (leftEnum.Current, rightEnum.Current);
         }
 
+        public static IEnumerable<ValueTuple<T, int>> WithIndex<T>(this IEnumerable<T> sequence, int index = 0)
+        {
+            foreach(var item in sequence)
+            {
+                yield return (item, index++);
+            }
+        }
+
         public static void Add(this IList seq, object obj, int count)
         {
             for(int i = 0; i < count; i++)
             {
                 seq.Add(obj);
             }
+        }
+
+        public static void Shuffle<T>(this IList<T> list, Random rng)
+        {
+            for(var i = 0; i < list.Count; i++)
+                list.Swap(i, rng.Next(i, list.Count));
+        }
+
+        public static void Swap<T>(this IList<T> list, int i, int j)
+        {
+            var temp = list[i];
+            list[i] = list[j];
+            list[j] = temp;
         }
 
         public static void Add(this TableLayoutStyleCollection collection, TableLayoutStyle style, int count)
@@ -82,6 +103,19 @@ namespace Memory_Boxes_WinForms
                     collection.Add(Activator.CreateInstance(typeof(ColumnStyle), parameters) as ColumnStyle);
                 }
             }
+        }
+
+        public static Image ReplaceColor(this Image bmp, Color oldColor, Color newColor)
+        {
+            using(var gr = Graphics.FromImage(bmp))
+            {
+                var colorMaps = new[] { new System.Drawing.Imaging.ColorMap() { OldColor = oldColor, NewColor = newColor } };
+                var imageAttrs = new System.Drawing.Imaging.ImageAttributes();
+                imageAttrs.SetRemapTable(colorMaps);
+                gr.DrawImage(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, imageAttrs);
+            }
+
+            return bmp;
         }
     }
 }

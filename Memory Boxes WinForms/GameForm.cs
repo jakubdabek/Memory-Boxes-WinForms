@@ -8,40 +8,48 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Memory_Boxes_WinForms
+namespace Memory_Boxes_WinForms.Game
 {
     public partial class GameForm : Form
     {
         readonly Size gridSize;
-        GamePanel mainGamePanel;
+        GameBoard mainGamePanel;
 
-        public GameForm(Size size, Action showParent)
+        public GameForm(Size size, Action showMenu)
         {
-            _showParent = showParent;
-            this.gridSize = size;
+            _showMenu = showMenu;
+            gridSize = size;
             InitializeComponent();
         }
 
-        //Used after closing to show main menu
-        readonly Action _showParent;
-        private void GameForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            _showParent();
-        }
+        readonly Action _showMenu;
+        private void GameForm_FormClosed(object sender, FormClosedEventArgs e) => _showMenu();
 
         private void GameForm_Load(object sender, EventArgs e)
         {
-            mainGamePanel = new GamePanel(gridSize, this);
+            mainGamePanel = new GameBoard(gridSize, this);
             this.Size = mainGamePanel.Size + _Padding;
             Utility.CenterInControl(mainGamePanel, this);
+            this.Size += new Size(0, 30);
+            mainGamePanel.Location += new Size(0, 30);
             this.CenterToScreen();
-
-            InitializeGame();
         }
 
         const int CellSize = 80;
         ///<summary>Used for manually setting form's size with a centered control</summary>
         ///<remarks>Distance from the inner edges of the window is 12px</remarks>
         static readonly Size _Padding = new Size(36, 58);
+
+        public ImageList.ImageCollection Images => imageList.Images;
+
+        private void mainLoopTimer_Tick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void timeTimer_Tick(object sender, EventArgs e)
+        {
+            timeDisplayLabel.Text = mainGamePanel.stopwatch.Elapsed.ToString(@"mm\:ss\.f");
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Memory_Boxes_WinForms
+﻿namespace Memory_Boxes_WinForms.Menu
 {
     partial class SizeDialogForm
     {
@@ -98,7 +98,7 @@
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "SizeDialogForm";
+            this.Text = "  Choose the size of the playing field";
             this.ResumeLayout(false);
 
         }

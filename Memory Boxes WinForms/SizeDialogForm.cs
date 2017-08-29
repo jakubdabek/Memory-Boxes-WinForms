@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 
-namespace Memory_Boxes_WinForms
+namespace Memory_Boxes_WinForms.Menu
 {
     public partial class SizeDialogForm : Form
     {
@@ -22,32 +22,44 @@ namespace Memory_Boxes_WinForms
             {
                 for(int j = 0; j < dialogTablePanel.RowCount; j++)
                 {
+                    bool isSmall = (i + 1) * (j + 1) <= 12;
+                    bool isMinimal = isSmall && ((i + 2) * (j + 1) > 14 || (i + 1) * (j + 2) > 14);
+                    bool isInit = i < GridSize.Width && j < GridSize.Height;
+                    
                     var panel = new Panel()
                     {
                         Margin = new Padding(0),
                         Dock = DockStyle.Fill,
-                        //Name = $"{i},{j}",
                         BorderStyle = BorderStyle.FixedSingle,
-                        BackColor = i == 0 & j == 0 ? SystemColors.HotTrack : SystemColors.Control,
+                        BackColor = isInit ? SystemColors.HotTrack : SystemColors.Control,
                     };
-                    panel.Click += GridSizeChoicePanel_Click;
+
+                    if(!isSmall || isMinimal)
+                        panel.Click += GridSizeChoicePanel_Click;
+                    else
+                        panel.Click += WrongGridSizeChoicePanel_Click;
+
                     dialogTablePanel.Controls.Add(panel, i, j);
                 }
             }
         }
 
-        //static Regex panelNameRowColNumExtractionRegex = new Regex(@"(\d+),(\d+)", RegexOptions.Compiled);
+        static Color ErrorColor = Color.FromArgb(220, 0, 0);
+
+        private async void WrongGridSizeChoicePanel_Click(object sender, EventArgs e)
+        {
+            var panel = sender as Panel;
+            var color = panel.BackColor;
+            panel.BackColor = ErrorColor;
+
+            await Task.Delay(150);
+
+            if(panel.BackColor == ErrorColor)
+                panel.BackColor = color;
+        }
 
         private void GridSizeChoicePanel_Click(object sender, EventArgs e)
         {
-            //var panel = sender as Panel;
-
-            ////var (rowMax, colMax,_,_,_,_,_) = (panelNameRowColNumExtractionRegex.Match(panel.Name).Groups as IEnumerable<Group>).Skip(1).Select(a=>int.Parse(a.Value));
-            //var query = panelNameRowColNumExtractionRegex.Match(panel.Name).Groups.Cast<Group>().Skip(1).Select(gr => int.Parse(gr.Value));
-            //(int colMax, int rowMax) = query;
-
-            //GridSize = new TableLayoutPanelCellPosition(colMax + 1, rowMax + 1);
-
             TableLayoutPanelCellPosition CornerCellPosition = dialogTablePanel.GetPositionFromControl(sender as Panel);
             GridSize = new Size(CornerCellPosition.Column + 1, CornerCellPosition.Row + 1);
 
@@ -65,7 +77,7 @@ namespace Memory_Boxes_WinForms
 
         public Size GridSize { get; private set; } = new Size(4, 3);
 
-        private void confirmSizeChoiceButton_Click(object sender, EventArgs e)
+        private async void confirmSizeChoiceButton_Click(object sender, EventArgs e)
         {
             if(this.GridSize.Width * this.GridSize.Height % 2 == 0)
             {
@@ -77,20 +89,17 @@ namespace Memory_Boxes_WinForms
                 var panels = dialogTablePanel.Controls.Cast<Panel>().Where(panel => panel.BackColor == SystemColors.HotTrack).ToList();
                 //List<Color> colors = panels.Select(panel => panel.BackColor).ToList();
 
-                foreach(var item in panels) item.BackColor = Color.FromArgb(200, 0, 0);
-
+                foreach(var item in panels)
+                    item.BackColor = ErrorColor;
                 this.Invalidate();
+                dialogTablePanel.Enabled = false;
 
-                System.Threading.Timer timer = new System.Threading.Timer(
-                delegate
-                {
-                    //foreach(var (panel, color) in panels.Zip(colors))
-                    //    panel.BackColor = color;
-                    foreach(var panel in panels) panel.BackColor = SystemColors.HotTrack;
+                await Task.Delay(200);
 
-                    this.Invalidate();
-                },
-                null, 200, System.Threading.Timeout.Infinite);
+                foreach(var panel in panels)
+                    panel.BackColor = SystemColors.HotTrack;
+                this.Invalidate();
+                dialogTablePanel.Enabled = true;
             }
         }
     }

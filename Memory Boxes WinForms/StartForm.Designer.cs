@@ -1,4 +1,4 @@
-﻿namespace Memory_Boxes_WinForms
+﻿namespace Memory_Boxes_WinForms.Menu
 {
     partial class StartForm
     {

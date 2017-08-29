@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
 
-namespace Memory_Boxes_WinForms
+using Memory_Boxes_WinForms.Game;
+
+namespace Memory_Boxes_WinForms.Menu
 {
     public partial class StartForm : Form
     {
@@ -35,7 +37,7 @@ namespace Memory_Boxes_WinForms
                 return cp;
             }
         }
-        
+
         private void Form1_Load(object sender, EventArgs e)
         {
             Rectangle textRectF;
@@ -48,8 +50,8 @@ namespace Memory_Boxes_WinForms
             Utility.CenterInControl(startButton, titlePanel, Utility.CenterStyle.Horizontal);
 
             titleInitLocation = Utility.GetCenterPositionInControl(
-                titlePanel, 
-                Rectangle.Round(textRectF), 
+                titlePanel,
+                Rectangle.Round(textRectF),
                 Utility.CenterStyle.Horizontal
                 ).Location;
         }
@@ -69,5 +71,39 @@ namespace Memory_Boxes_WinForms
                 }
             }
         }
+
+
+    #region Rainbow text init
+
+        bool nextRainbowStep = true;
+
+        string titleText = "Memory Boxes";
+        Point titleInitLocation = new Point(10, 50);
+        Font titleFont = new Font("Microsoft Sans Serif", 30, FontStyle.Bold);
+
+        Action<Graphics, bool> DrawTitleText;
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+            if(!titleRainbowTimer.Enabled)
+                titleRainbowTimer.Start();
+
+            if(DrawTitleText is null)
+            {
+                DrawTitleText = Utility.RainbowGenerator.TextBrush.MakeDrawAction(titleText, e.Graphics, titleFont, titleInitLocation);
+            }
+
+            DrawTitleText(e.Graphics, nextRainbowStep);
+            nextRainbowStep = false;
+        }
+
+        private void titleRainbowTimer_Tick(object sender, EventArgs e)
+        {
+            nextRainbowStep = true;
+            titlePanel.Invalidate();
+        }
+
+    #endregion
+
     }
 }

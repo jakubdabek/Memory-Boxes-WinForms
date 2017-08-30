@@ -71,6 +71,7 @@
       <DependentUpon>GameForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GameBoard.cs" />
+    <Compile Include="RainbowUtilities.cs" />
     <Compile Include="SizeDialogForm.cs">
       <SubType>Form</SubType>
     </Compile>

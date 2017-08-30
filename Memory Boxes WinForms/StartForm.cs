@@ -22,6 +22,8 @@ namespace Memory_Boxes_WinForms.Menu
             this.CenterToScreen();
             titleRainbowTimer.Interval = 200;
 
+            //SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+
             //typeof(Panel).InvokeMember("DoubleBuffered",
             //BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
             //null, TitlePanel, new object[] { true });
@@ -75,7 +77,7 @@ namespace Memory_Boxes_WinForms.Menu
 
     #region Rainbow text init
 
-        bool nextRainbowStep = true;
+        volatile bool nextRainbowStep = true;
 
         string titleText = "Memory Boxes";
         Point titleInitLocation = new Point(10, 50);
@@ -85,12 +87,13 @@ namespace Memory_Boxes_WinForms.Menu
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
+            //System.Diagnostics.Debug.WriteLine("paint!");
             if(!titleRainbowTimer.Enabled)
                 titleRainbowTimer.Start();
 
             if(DrawTitleText is null)
             {
-                DrawTitleText = Utility.RainbowGenerator.TextBrush.MakeDrawAction(titleText, e.Graphics, titleFont, titleInitLocation);
+                DrawTitleText = RainbowUtilities.TextDrawer.GetDrawAction(titleText, e.Graphics, titleFont, titleInitLocation);
             }
 
             DrawTitleText(e.Graphics, nextRainbowStep);
@@ -100,7 +103,7 @@ namespace Memory_Boxes_WinForms.Menu
         private void titleRainbowTimer_Tick(object sender, EventArgs e)
         {
             nextRainbowStep = true;
-            titlePanel.Invalidate();
+            titlePanel.Refresh();
         }
 
     #endregion

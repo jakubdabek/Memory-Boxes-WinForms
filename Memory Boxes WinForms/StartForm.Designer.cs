@@ -17,6 +17,7 @@
             {
                 components.Dispose();
                 titleFont.Dispose();
+                TextDrawer.Dispose();
             }
             base.Dispose(disposing);
         }

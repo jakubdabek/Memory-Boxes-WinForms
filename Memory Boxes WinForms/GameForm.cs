@@ -22,6 +22,17 @@ namespace Memory_Boxes_WinForms.Game
             InitializeComponent();
         }
 
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                // Activate double buffering at the form level.  All child controls will be double buffered as well.
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;   // WS_EX_COMPOSITED
+                return cp;
+            }
+        }
+
         readonly Action _showMenu;
         private void GameForm_FormClosed(object sender, FormClosedEventArgs e) => _showMenu();
 

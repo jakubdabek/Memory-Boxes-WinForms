@@ -90,7 +90,7 @@ namespace Memory_Boxes_WinForms
             return cb;
         }
 
-        public class TextDrawer
+        public class TextDrawer : IDisposable
         {
             private int _offset;
             private int Offset
@@ -106,16 +106,15 @@ namespace Memory_Boxes_WinForms
             public Font Font { get; }
 
             protected LinearGradientBrush Brush;
+            protected ColorBlend ColorBlend;
 
-            private TextDrawer(string text, Graphics initGraphics, Font font, PointF startingPoint)
+            public TextDrawer(string text, Graphics initGraphics, Font font, PointF startingPoint)
             {
                 Text = text;
                 graphics = initGraphics;
                 characterCount = text.Length;
                 Font = font;
                 StartingPoint = startingPoint;
-
-                MadeDrawers.Add(Text, this);
 
                 List<RectangleF> letterBounds;
                 using(var format = new StringFormat())
@@ -145,7 +144,7 @@ namespace Memory_Boxes_WinForms
                     positions.Add(val);
                 }
 
-                ColorBlend colorBlend = new ColorBlend()
+                ColorBlend = new ColorBlend()
                 {
                     Colors = Utility.DoubleElements(GenerateExtendedRainbow(ColorCount, characterCount)).ToArray(),
                     Positions = positions.ToArray()
@@ -153,7 +152,7 @@ namespace Memory_Boxes_WinForms
 
                 Brush = new LinearGradientBrush(textBounds.Location, new PointF(textBounds.Right, textBounds.Top), Color.Empty, Color.Empty)
                 {
-                    InterpolationColors = colorBlend
+                    InterpolationColors = ColorBlend
                 };
 
                 IEnumerable<CharacterRange> generateSingleCharacterRanges(int _count)
@@ -165,26 +164,33 @@ namespace Memory_Boxes_WinForms
                 }
             }
 
-            void Draw(Graphics gr, bool next)
+            public void Draw(Graphics gr, bool next)
             {
                 gr.DrawString(Text, Font, Brush, StartingPoint);
                 if(next)
                 {
-                    Brush.InterpolationColors.Colors =
-                    Utility.DoubleElements(GenerateExtendedRainbow(ColorCount, characterCount, Offset)).ToArray();
+                    ColorBlend.Colors = Utility.DoubleElements(GenerateExtendedRainbow(ColorCount, characterCount, Offset)).ToArray();
+                    Brush.InterpolationColors = ColorBlend;
                 }
             }
 
-            public static Action<Graphics, bool> GetDrawAction(string text, Graphics initGraphics, Font font, PointF startingPoint)
-            {                
-                if(MadeDrawers.TryGetValue(text, out var drawer))
-                    return drawer.Draw;
+            bool disposed = false;
 
-                drawer = new TextDrawer(text, initGraphics, font, startingPoint);                
-                return drawer.Draw;
+            public void Dispose()
+            {
+                if(disposed)
+                    throw new ObjectDisposedException(nameof(TextDrawer));
+                Dispose(true);
             }
 
-            private static Dictionary<string, TextDrawer> MadeDrawers = new Dictionary<string, TextDrawer>();
+            protected void Dispose(bool disposing)
+            {
+                disposed = true;
+                if(disposing)
+                {
+                    Brush.Dispose();
+                }
+            }
         }
     }
 }

@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Card.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GameForm.cs">
       <SubType>Form</SubType>

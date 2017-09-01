@@ -83,7 +83,7 @@ namespace Memory_Boxes_WinForms.Menu
         Point titleInitLocation = new Point(10, 50);
         Font titleFont = new Font("Microsoft Sans Serif", 30, FontStyle.Bold);
 
-        Action<Graphics, bool> DrawTitleText;
+        RainbowUtilities.TextDrawer TextDrawer;
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
@@ -91,12 +91,12 @@ namespace Memory_Boxes_WinForms.Menu
             if(!titleRainbowTimer.Enabled)
                 titleRainbowTimer.Start();
 
-            if(DrawTitleText is null)
-            {
-                DrawTitleText = RainbowUtilities.TextDrawer.GetDrawAction(titleText, e.Graphics, titleFont, titleInitLocation);
+            if(TextDrawer is null)
+            {                
+                TextDrawer = new RainbowUtilities.TextDrawer(titleText, e.Graphics, titleFont, titleInitLocation);
             }
 
-            DrawTitleText(e.Graphics, nextRainbowStep);
+            TextDrawer.Draw(e.Graphics, nextRainbowStep);            
             nextRainbowStep = false;
         }
 

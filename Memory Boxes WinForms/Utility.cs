@@ -34,18 +34,37 @@ namespace Memory_Boxes_WinForms
         [Flags]
         public enum CenterStyle { Vertical = 0b01, Horizontal = 0b10, Bilateral = Vertical | Horizontal }
 
-        public static Rectangle GetCenterPositionInControl(Control parent, Rectangle childRect, CenterStyle centerStyle = CenterStyle.Bilateral)
+        public static Rectangle GetCenterPositionInControl(Rectangle parentRect, Rectangle childRect, CenterStyle centerStyle = CenterStyle.Bilateral)
         {
             if(centerStyle.HasFlag(CenterStyle.Horizontal))
-                childRect.X = (parent.ClientSize.Width - childRect.Width) / 2;
+                childRect.X = (parentRect.Width - childRect.Width) / 2;
             if(centerStyle.HasFlag(CenterStyle.Vertical))
-                childRect.Y = (parent.ClientSize.Height - childRect.Height) / 2;
+                childRect.Y = (parentRect.Height - childRect.Height) / 2;
             return childRect;
         }
 
         public static void CenterInControl(Control child, Control parent, CenterStyle centerStyle = CenterStyle.Bilateral)
         {
-            child.Location = GetCenterPositionInControl(parent, child.Bounds, centerStyle).Location;
+            child.Location = GetCenterPositionInControl(parent.ClientRectangle, child.Bounds, centerStyle).Location;
+        }
+
+        public enum InterpolationMethod { Linear, Sine, Cosine }
+
+        public static double Interpolate(double start, double end, double fraction, InterpolationMethod method)
+        {
+            double difference = end - start;
+
+            switch(method)
+            {
+            case InterpolationMethod.Linear:
+                return start + (difference * fraction);
+            case InterpolationMethod.Sine:
+                return start + Math.Abs(Math.Sin(fraction * 2 * Math.PI) * difference);
+            case InterpolationMethod.Cosine:
+                return start + Math.Abs(Math.Cos(fraction * 2 * Math.PI) * difference);
+            default:
+                throw new ArgumentOutOfRangeException("Given interpolation method is not specified", nameof(method));
+            }
         }
     }
 }

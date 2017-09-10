@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Memory_Boxes_WinForms.Game
 {
@@ -11,14 +12,23 @@ namespace Memory_Boxes_WinForms.Game
     {
         const int FPS = 60;
 
-        public Stopwatch stopwatch;
+        public Stopwatch stopwatch = new Stopwatch();
 
         void InitializeGame()
         {
             Random rand = new Random();
 
-            stopwatch = Stopwatch.StartNew();
-            //timeTimer.Start();
+            stopwatch.Start();
+            Timer timer = Form.mainTimer;
+            timer.Tick += MainTimer_Tick;
+            timer.Interval = 500 / FPS;            
+            timer.Start();
+            Form.timeDisplayTimer.Start();            
+        }
+
+        private void MainTimer_Tick(object sender, EventArgs e)
+        {
+            Refresh();
         }
 
         bool _paused = true;
@@ -32,5 +42,7 @@ namespace Memory_Boxes_WinForms.Game
         {
             _paused = false;
         }
+
+        Timer timer;        
     }
 }

@@ -64,10 +64,11 @@ namespace Memory_Boxes_WinForms
             }
         }
 
-        public static void Shuffle<T>(this IList<T> list, Random rng)
+        public static IList<T> Shuffle<T>(this IList<T> list, Random rng)
         {
             for(var i = 0; i < list.Count; i++)
                 list.Swap(i, rng.Next(i, list.Count));
+            return list;
         }
 
         public static void Swap<T>(this IList<T> list, int i, int j)
@@ -105,16 +106,17 @@ namespace Memory_Boxes_WinForms
             }
         }
 
-        public static Image ReplaceColor(this Image bmp, Color oldColor, Color newColor)
+        public static Bitmap ReplaceColor(this Image image, Color oldColor, Color newColor)
         {
+            var bmp = new Bitmap(image.Width, image.Height);
             using(var gr = Graphics.FromImage(bmp))
             {
-                var colorMaps = new[] { new System.Drawing.Imaging.ColorMap() { OldColor = oldColor, NewColor = newColor } };
                 var imageAttrs = new System.Drawing.Imaging.ImageAttributes();
-                imageAttrs.SetRemapTable(colorMaps);
-                gr.DrawImage(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, imageAttrs);
+                var colorMap = new System.Drawing.Imaging.ColorMap() { OldColor = oldColor, NewColor = newColor };
+                imageAttrs.SetRemapTable(new[] { colorMap });
+                gr.DrawImage(image, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, imageAttrs);
             }
-
+            
             return bmp;
         }
     }

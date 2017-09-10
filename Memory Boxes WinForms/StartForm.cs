@@ -21,6 +21,7 @@ namespace Memory_Boxes_WinForms.Menu
             InitializeComponent();
             this.CenterToScreen();
             titleRainbowTimer.Interval = 200;
+            titleText = this.Text;
 
             //SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 
@@ -52,7 +53,7 @@ namespace Memory_Boxes_WinForms.Menu
             Utility.CenterInControl(startButton, titlePanel, Utility.CenterStyle.Horizontal);
 
             titleInitLocation = Utility.GetCenterPositionInControl(
-                titlePanel,
+                titlePanel.ClientRectangle,
                 Rectangle.Round(textRectF),
                 Utility.CenterStyle.Horizontal
                 ).Location;
@@ -68,8 +69,10 @@ namespace Memory_Boxes_WinForms.Menu
                 {
                     var gridSize = dialog.GridSize;
                     this.Visible = false;
-                    gameForm = new GameForm(gridSize, () => this.Visible = true);
-                    gameForm.Show();
+                    this.Enabled = false;
+                    gameForm = new GameForm(gridSize);
+                    gameForm.FormClosed += delegate { this.Visible = this.Enabled = true; };
+                    gameForm.Show();                    
                 }
             }
         }

@@ -30,17 +30,13 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameForm));
-            this.mainLoopTimer = new System.Windows.Forms.Timer(this.components);
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.timeDisplayLabel = new System.Windows.Forms.Label();
             this.pausePlayImageList = new System.Windows.Forms.ImageList(this.components);
             this.pausePlayButton = new System.Windows.Forms.Button();
             this.timeDisplayTimer = new System.Windows.Forms.Timer(this.components);
+            this.mainTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
-            // 
-            // mainLoopTimer
-            // 
-            this.mainLoopTimer.Tick += new System.EventHandler(this.mainLoopTimer_Tick);
             // 
             // imageList
             // 
@@ -100,7 +96,6 @@
             this.Name = "GameForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "GameForm";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GameForm_FormClosed);
             this.Load += new System.EventHandler(this.GameForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -108,12 +103,11 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Timer mainLoopTimer;
         private System.Windows.Forms.ImageList imageList;
         private System.Windows.Forms.Label timeDisplayLabel;
         private System.Windows.Forms.ImageList pausePlayImageList;
         private System.Windows.Forms.Button pausePlayButton;
-        private System.Windows.Forms.Timer timeDisplayTimer;
+        public System.Windows.Forms.Timer timeDisplayTimer;
+        public System.Windows.Forms.Timer mainTimer;
     }
 }

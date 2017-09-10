@@ -22,9 +22,11 @@ namespace Memory_Boxes_WinForms.Game
             Color.Black,
             Color.Red,
             Color.Blue,
+            Color.Pink,
             Color.Orange,
             Color.Green,
             Color.Purple,
+            Color.Turquoise,
         };
 
         HashSet<KeyValuePair<int, Color>> set = new HashSet<KeyValuePair<int, Color>>();
@@ -34,29 +36,34 @@ namespace Memory_Boxes_WinForms.Game
         {
             ColumnCount = columnCount;
             RowCount = rowCount;
-            ColumnStyles.Add(SizeType.Percent, 100f / columnCount, count: columnCount);
-            RowStyles.Add(SizeType.Percent, 100f / rowCount, count: rowCount);
+            ColumnStyles.Add(SizeType.Percent, 100f / ColumnCount, count: ColumnCount);
+            RowStyles.Add(SizeType.Percent, 100f / RowCount, count: RowCount);
+            
             //CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
-            Size = new Size(columnCount * cellSize, rowCount * cellSize);
+            Size = new Size(ColumnCount * CellSize, RowCount * CellSize);
 
             Random rand = new Random();
 
-            for(int i = 0; i < rowCount * columnCount; i++)
+            while(set.Count * 2 < RowCount * ColumnCount)
             {
-                Controls.Add(new PictureBox()
-                {
-                    Dock = DockStyle.Fill,
-                    Image =
-                        (Form.Images[rand.Next(Form.Images.Count)].Clone() as Image)
-                        .ReplaceColor(Color.Black, availableColors[rand.Next(availableColors.Count)]),
-                    SizeMode = PictureBoxSizeMode.Zoom,
-                    BorderStyle = BorderStyle.FixedSingle,
-                });
+                set.Add(new KeyValuePair<int, Color>(
+                    rand.Next(Form.Images.Count),
+                    availableColors[rand.Next(availableColors.Count)]));
+            }
+
+            var list = Utility.DoubleElements(set.ToList()).Shuffle(rand);
+
+            for(int i = 0; i < RowCount * ColumnCount; i++)
+            {
+                var chosen = list[i];
+                Controls.Add(new Card(Form.Images[chosen.Key].ReplaceColor(Color.Black, chosen.Value), null, stopwatch));
             }
 
             //InitializeComponents();
+            InitializeGame();
         }
-        const int cellSize = 80;
+
+        const int CellSize = 80;
     }
 
 }

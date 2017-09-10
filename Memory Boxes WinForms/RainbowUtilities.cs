@@ -16,7 +16,7 @@ namespace Memory_Boxes_WinForms
             public List<Color> this[int length]
             {
                 get
-                {
+                {                    
                     if(rainbows.TryGetValue(length, out var colors))
                         return colors;
 
@@ -42,9 +42,9 @@ namespace Memory_Boxes_WinForms
                         (int)(Math.Sin(frequency * i + deltaG) * 127.5 + 127.5),
                         (int)(Math.Sin(frequency * i + deltaB) * 127.5 + 127.5)));
                 }
-
+                
                 return colors;
-            }
+            }            
         }
 
         static readonly RainbowCollection rainbows = new RainbowCollection();

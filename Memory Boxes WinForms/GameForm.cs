@@ -15,10 +15,10 @@ namespace Memory_Boxes_WinForms.Game
         readonly Size gridSize;
         GameBoard mainGamePanel;
 
-        public GameForm(Size size, Action showMenu)
+        public GameForm(Size size)
         {
-            _showMenu = showMenu;
             gridSize = size;
+            DoubleBuffered = true;
             InitializeComponent();
         }
 
@@ -31,10 +31,7 @@ namespace Memory_Boxes_WinForms.Game
                 cp.ExStyle |= 0x02000000;   // WS_EX_COMPOSITED
                 return cp;
             }
-        }
-
-        readonly Action _showMenu;
-        private void GameForm_FormClosed(object sender, FormClosedEventArgs e) => _showMenu();
+        }        
 
         private void GameForm_Load(object sender, EventArgs e)
         {
@@ -44,6 +41,7 @@ namespace Memory_Boxes_WinForms.Game
             this.Size += new Size(0, 30);
             mainGamePanel.Location += new Size(0, 30);
             this.CenterToScreen();
+            //timeDisplayTimer.Start();
         }
 
         const int CellSize = 80;
@@ -51,12 +49,7 @@ namespace Memory_Boxes_WinForms.Game
         ///<remarks>Distance from the inner edges of the window is 12px</remarks>
         static readonly Size _Padding = new Size(36, 58);
 
-        public ImageList.ImageCollection Images => imageList.Images;
-
-        private void mainLoopTimer_Tick(object sender, EventArgs e)
-        {
-
-        }
+        public ImageList.ImageCollection Images => imageList.Images;        
 
         private void timeTimer_Tick(object sender, EventArgs e)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,6 +21,8 @@ namespace Memory_Boxes_WinForms.Game
             gridSize = size;
             DoubleBuffered = true;
             InitializeComponent();
+
+            GetImages();
         }
 
         protected override CreateParams CreateParams
@@ -31,7 +34,7 @@ namespace Memory_Boxes_WinForms.Game
                 cp.ExStyle |= 0x02000000;   // WS_EX_COMPOSITED
                 return cp;
             }
-        }        
+        }
 
         private void GameForm_Load(object sender, EventArgs e)
         {
@@ -42,6 +45,32 @@ namespace Memory_Boxes_WinForms.Game
             gameBoard.Location += new Size(0, 30);
             this.CenterToScreen();
             //timeDisplayTimer.Start();
+        }
+
+        void GetImages()
+        {
+            FileInfo[] files;
+            DirectoryInfo directory;
+
+            if((directory = new DirectoryInfo(@".\Images")).Exists)
+            {
+                files = directory.GetFiles("*.png");
+            }
+            else if((directory = new DirectoryInfo(@"..\Images")).Exists)
+            {
+                files = directory.GetFiles("*.png");
+            }
+            else if((directory = new DirectoryInfo(@"..\..\Images")).Exists)
+            {
+                files = directory.GetFiles("*.png");
+            }
+            else
+            {
+                throw new Exception("No images found");
+            }
+
+            var images = files.Select(file => Image.FromFile(file.FullName));
+            imageList.Images.AddRange(images.ToArray());
         }
 
         const int CellSize = 80;

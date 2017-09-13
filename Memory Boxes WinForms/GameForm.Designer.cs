@@ -79,6 +79,7 @@
             this.pausePlayButton.Size = new System.Drawing.Size(41, 23);
             this.pausePlayButton.TabIndex = 0;
             this.pausePlayButton.UseVisualStyleBackColor = true;
+            this.pausePlayButton.Click += new System.EventHandler(this.pausePlayButton_Click);
             // 
             // timeDisplayTimer
             // 

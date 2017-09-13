@@ -30,7 +30,7 @@ namespace Memory_Boxes_WinForms.Game
         };
 
         HashSet<KeyValuePair<int, Color>> set = new HashSet<KeyValuePair<int, Color>>();
-        GameForm Form { get; set; }
+        public GameForm Form { get; private set; }
 
         public GameBoard(int columnCount, int rowCount, Control parent) : this(parent)
         {
@@ -56,7 +56,8 @@ namespace Memory_Boxes_WinForms.Game
             for(int i = 0; i < RowCount * ColumnCount; i++)
             {
                 var chosen = list[i];
-                Controls.Add(new Card(Form.Images[chosen.Key].ReplaceColor(Color.Black, chosen.Value), null, stopwatch));
+                //Controls.Add(new Card(Form.Images[chosen.Key].ReplaceColor(Color.Black, chosen.Value), null, this));
+                Controls.Add(new Card(chosen.Key, chosen.Value, null, this));
             }
 
             //InitializeComponents();

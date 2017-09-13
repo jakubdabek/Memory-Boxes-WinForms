@@ -13,7 +13,7 @@ namespace Memory_Boxes_WinForms.Game
     public partial class GameForm : Form
     {
         readonly Size gridSize;
-        GameBoard mainGamePanel;
+        GameBoard gameBoard;
 
         public GameForm(Size size)
         {
@@ -35,11 +35,11 @@ namespace Memory_Boxes_WinForms.Game
 
         private void GameForm_Load(object sender, EventArgs e)
         {
-            mainGamePanel = new GameBoard(gridSize, this);
-            this.Size = mainGamePanel.Size + _Padding;
-            Utility.CenterInControl(mainGamePanel, this);
+            gameBoard = new GameBoard(gridSize, this);
+            this.Size = gameBoard.Size + _Padding;
+            Utility.CenterInControl(gameBoard, this);
             this.Size += new Size(0, 30);
-            mainGamePanel.Location += new Size(0, 30);
+            gameBoard.Location += new Size(0, 30);
             this.CenterToScreen();
             //timeDisplayTimer.Start();
         }
@@ -53,7 +53,14 @@ namespace Memory_Boxes_WinForms.Game
 
         private void timeTimer_Tick(object sender, EventArgs e)
         {
-            timeDisplayLabel.Text = mainGamePanel.stopwatch.Elapsed.ToString(@"mm\:ss\.f");
+            timeDisplayLabel.Text = gameBoard.gameDurationStopwatch.Elapsed.ToString(@"mm\:ss\.f");
+        }
+
+        private void pausePlayButton_Click(object sender, EventArgs e)
+        {
+            gameBoard.PauseUnpause();
+
+            //gameBoard.Win();
         }
     }
 }

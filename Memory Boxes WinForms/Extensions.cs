@@ -31,8 +31,8 @@ namespace Memory_Boxes_WinForms
 
         public static void Deconstruct<T>(this IEnumerable<T> sequence, out T val1, out T val2)
         {
-            if(sequence.Count() < 2) throw new ArgumentException("Sequence too small for deconstruction", nameof(sequence));
-            var a = sequence.Take(2).ToList();
+            var a = sequence.ToArray();
+            if(a.Length < 2) throw new ArgumentException("Sequence too small for deconstruction", nameof(sequence));
             (val1, val2) = (a[0], a[1]);
         }
 
@@ -42,10 +42,18 @@ namespace Memory_Boxes_WinForms
 
         public static IEnumerable<ValueTuple<T1, T2>> Zip<T1, T2>(this IEnumerable<T1> left, IEnumerable<T2> right)
         {
-            var leftEnum = left.GetEnumerator();
-            var rightEnum = right.GetEnumerator();
-            while(leftEnum.MoveNext() & rightEnum.MoveNext())
-                yield return (leftEnum.Current, rightEnum.Current);
+            using(var leftEnum = left.GetEnumerator())
+            using(var rightEnum = right.GetEnumerator())
+                while(leftEnum.MoveNext() & rightEnum.MoveNext())
+                    yield return (leftEnum.Current, rightEnum.Current);
+        }
+
+        public static IEnumerable<ValueTuple<T, int>> WithIndex<T>(this IEnumerable<T> sequence, int index = 0)
+        {
+            foreach(var item in sequence)
+            {
+                yield return (item, index++);
+            }
         }
 
         public static void Add(this IList seq, object obj, int count)
@@ -54,6 +62,20 @@ namespace Memory_Boxes_WinForms
             {
                 seq.Add(obj);
             }
+        }
+
+        public static IList<T> Shuffle<T>(this IList<T> list, Random rng)
+        {
+            for(var i = 0; i < list.Count; i++)
+                list.Swap(i, rng.Next(i, list.Count));
+            return list;
+        }
+
+        public static void Swap<T>(this IList<T> list, int i, int j)
+        {
+            var temp = list[i];
+            list[i] = list[j];
+            list[j] = temp;
         }
 
         public static void Add(this TableLayoutStyleCollection collection, TableLayoutStyle style, int count)
@@ -82,6 +104,20 @@ namespace Memory_Boxes_WinForms
                     collection.Add(Activator.CreateInstance(typeof(ColumnStyle), parameters) as ColumnStyle);
                 }
             }
+        }
+
+        public static Bitmap ReplaceColor(this Image image, Color oldColor, Color newColor)
+        {
+            var bmp = new Bitmap(image.Width, image.Height);
+            using(var gr = Graphics.FromImage(bmp))
+            {
+                var imageAttrs = new System.Drawing.Imaging.ImageAttributes();
+                var colorMap = new System.Drawing.Imaging.ColorMap() { OldColor = oldColor, NewColor = newColor };
+                imageAttrs.SetRemapTable(new[] { colorMap });
+                gr.DrawImage(image, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, imageAttrs);
+            }
+            
+            return bmp;
         }
     }
 }

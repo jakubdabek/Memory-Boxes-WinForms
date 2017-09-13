@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
 
-namespace Memory_Boxes_WinForms
+using Memory_Boxes_WinForms.Game;
+
+namespace Memory_Boxes_WinForms.Menu
 {
     public partial class StartForm : Form
     {
@@ -19,6 +21,9 @@ namespace Memory_Boxes_WinForms
             InitializeComponent();
             this.CenterToScreen();
             titleRainbowTimer.Interval = 200;
+            titleText = this.Text;
+
+            //SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 
             //typeof(Panel).InvokeMember("DoubleBuffered",
             //BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
@@ -35,21 +40,21 @@ namespace Memory_Boxes_WinForms
                 return cp;
             }
         }
-        
+
         private void Form1_Load(object sender, EventArgs e)
         {
             Rectangle textRectF;
             using(Graphics gr = titlePanel.CreateGraphics())
-                textRectF = new Rectangle(titleStartLocation, Size.Ceiling(gr.MeasureString(titleText, titleFont)));
+                textRectF = new Rectangle(titleInitLocation, Size.Ceiling(gr.MeasureString(titleText, titleFont)));
 
             titlePanel.Width = textRectF.Width + 20;
 
             Utility.CenterInControl(titlePanel, this, Utility.CenterStyle.Horizontal);
             Utility.CenterInControl(startButton, titlePanel, Utility.CenterStyle.Horizontal);
 
-            titleStartLocation = Utility.GetCenterPositionInControl(
-                titlePanel, 
-                Rectangle.Round(textRectF), 
+            titleInitLocation = Utility.GetCenterPositionInControl(
+                titlePanel.ClientRectangle,
+                Rectangle.Round(textRectF),
                 Utility.CenterStyle.Horizontal
                 ).Location;
         }
@@ -64,10 +69,47 @@ namespace Memory_Boxes_WinForms
                 {
                     var gridSize = dialog.GridSize;
                     this.Visible = false;
-                    gameForm = new GameForm(gridSize, () => this.Visible = true);
-                    gameForm.Show();
+                    this.Enabled = false;
+                    gameForm = new GameForm(gridSize);
+                    gameForm.FormClosed += delegate { this.Visible = this.Enabled = true; };
+                    gameForm.Show();                    
                 }
             }
         }
+
+
+    #region Rainbow text init
+
+        volatile bool nextRainbowStep = true;
+
+        string titleText = "Memory Boxes";
+        Point titleInitLocation = new Point(10, 50);
+        Font titleFont = new Font("Microsoft Sans Serif", 30, FontStyle.Bold);
+
+        RainbowUtilities.TextDrawer TextDrawer;
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+            //System.Diagnostics.Debug.WriteLine("paint!");
+            if(!titleRainbowTimer.Enabled)
+                titleRainbowTimer.Start();
+
+            if(TextDrawer is null)
+            {                
+                TextDrawer = new RainbowUtilities.TextDrawer(titleText, e.Graphics, titleFont, titleInitLocation);
+            }
+
+            TextDrawer.Draw(e.Graphics, nextRainbowStep);            
+            nextRainbowStep = false;
+        }
+
+        private void titleRainbowTimer_Tick(object sender, EventArgs e)
+        {
+            nextRainbowStep = true;
+            titlePanel.Refresh();
+        }
+
+    #endregion
+
     }
 }

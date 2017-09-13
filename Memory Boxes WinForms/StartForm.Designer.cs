@@ -1,4 +1,4 @@
-﻿namespace Memory_Boxes_WinForms
+﻿namespace Memory_Boxes_WinForms.Menu
 {
     partial class StartForm
     {
@@ -17,6 +17,7 @@
             {
                 components.Dispose();
                 titleFont.Dispose();
+                TextDrawer.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -70,7 +71,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "StartForm";
-            this.Text = "Memory boxes";
+            this.Text = "Memory";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.titlePanel.ResumeLayout(false);
             this.ResumeLayout(false);

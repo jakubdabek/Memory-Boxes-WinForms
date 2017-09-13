@@ -100,11 +100,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <EmbeddedResource Include="SizeDialogForm.resx">
       <DependentUpon>SizeDialogForm.cs</DependentUpon>
@@ -136,10 +138,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Play.png" />
+    <EmbeddedResource Include="Resources\Play.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Pause.png" />
+    <EmbeddedResource Include="Resources\Pause.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Images\" />

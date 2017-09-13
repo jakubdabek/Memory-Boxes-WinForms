@@ -87,6 +87,9 @@ namespace Memory_Boxes_WinForms.Game
 
         private void pausePlayButton_Click(object sender, EventArgs e)
         {
+            string key = pausePlayButton.ImageKey;
+            pausePlayButton.ImageKey = key == "Pause.png" ? "Play.png" : "Pause.png";
+            pausePlayButton.Refresh();
             gameBoard.PauseUnpause();
 
             //gameBoard.Win();

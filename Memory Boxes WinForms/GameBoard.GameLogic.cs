@@ -62,7 +62,7 @@ namespace Memory_Boxes_WinForms.Game
         public void PauseUnpause()
         {
             Enabled = !Enabled;
-            pauseRequested = !pauseRequested;
+            pauseRequested = !pauseRequested;            
             CheckPause();
         }
 
